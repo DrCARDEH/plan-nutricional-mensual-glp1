@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f2744">
+<title>Plan GLP-1 · Dr. Erik Cárdenas</title>
+<style>
+/* ── SYSTEM FONT STACK — sin dependencia de red ── */
+:root{
+  --ff: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --ff-serif: Georgia, 'Times New Roman', serif;
+  --navy:#0f2744; --navy2:#1a3d6b;
+  --gold:#b8913a; --gold-l:#d4aa5a; --gold-pale:#f7f0e0;
+  --cream:#fdfaf4; --white:#fff; --surface:#f5f1ea;
+  --text:#1a1a1a; --muted:#5a5a5a; --soft:#999;
+  --border:#ddd5c0; --border2:#c4b898;
+  --teal:#1a6b5c; --teal-l:#e0f2ec;
+  --blue:#185fa5; --blue-l:#e6f1fb;
+  --red-l:#fdf0f0; --amber-l:#fdf3e3; --green-l:#eaf5e3;
+  --radius:10px; --radius-sm:6px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--cream);color:var(--text);line-height:1.55;min-height:100vh;overflow-x:hidden}
+button{font-family:var(--ff);cursor:pointer;border:none;background:none;-webkit-appearance:none}
+ul{list-style:none}
+
+/* ══ HEADER ══ */
+.hdr{background:var(--navy);padding:env(safe-area-inset-top,0) 0 0;border-bottom:2px solid var(--gold)}
+.hdr-inner{padding:1.1rem 1rem 1rem}
+.hdr-brand{font-family:var(--ff-serif);font-size:1.35rem;font-weight:700;color:var(--gold-l);letter-spacing:.02em}
+.hdr-dr{font-size:.72rem;color:rgba(255,255,255,.82);letter-spacing:.08em;margin-top:3px}
+.hdr-sub{font-size:.58rem;color:rgba(255,255,255,.42);letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.hdr-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pill{font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid}
+.pill-g{color:var(--gold-l);border-color:rgba(184,145,58,.45);background:rgba(184,145,58,.12)}
+.pill-t{color:#7fcfb5;border-color:rgba(127,207,181,.4);background:rgba(127,207,181,.1)}
+.pill-b{color:#90bfeb;border-color:rgba(144,191,235,.4);background:rgba(144,191,235,.1)}
+
+/* ══ PHASE SELECTOR ══ */
+.phase-bar{display:flex;gap:8px;padding:.9rem 1rem;background:var(--white);border-bottom:1px solid var(--border)}
+.phase-btn{flex:1;padding:10px 10px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);text-align:left;min-height:56px;transition:all .18s;-webkit-appearance:none}
+.phase-btn.act{background:var(--navy);border-color:var(--gold)}
+.pb-title{font-size:.76rem;font-weight:600;color:var(--text);display:block;line-height:1.2}
+.phase-btn.act .pb-title{color:var(--gold-l)}
+.pb-sub{font-size:.6rem;color:var(--muted);display:block;margin-top:3px;line-height:1.3}
+.phase-btn.act .pb-sub{color:rgba(255,255,255,.5)}
+
+/* ══ MAIN TABS ══ */
+.main-tabs{display:flex;background:var(--white);border-bottom:1.5px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.main-tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:13px 14px;font-size:.68rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap;min-height:46px;transition:all .15s}
+.tab-btn.act{color:var(--navy);border-bottom-color:var(--gold);font-weight:700}
+
+/* ══ CONTENT ══ */
+.content{padding:.9rem 1rem 4rem}
+.panel{display:none}
+.panel.act{display:block}
+
+/* ══ WEEK NAV ══ */
+.week-nav{display:flex;gap:6px;margin-bottom:.85rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+.week-nav::-webkit-scrollbar{display:none}
+.week-btn{flex-shrink:0;padding:9px 16px;font-size:.72rem;font-weight:500;border:1.5px solid var(--border);border-radius:20px;background:var(--white);color:var(--muted);min-height:40px;white-space:nowrap;transition:all .15s}
+.week-btn.act{background:var(--navy);border-color:var(--navy);color:var(--gold-pale);font-weight:700}
+
+/* ══ DAY GRID ══ */
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:1rem}
+.day-cell{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 4px;cursor:pointer;text-align:center;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .15s;-webkit-appearance:none}
+.day-cell.act{background:var(--navy);border-color:var(--gold)}
+.dc-num{font-size:.55rem;color:var(--soft);margin-bottom:2px}
+.day-cell.act .dc-num{color:rgba(255,255,255,.5)}
+.dc-name{font-size:.7rem;font-weight:600;color:var(--text)}
+.day-cell.act .dc-name{color:var(--gold-pale)}
+
+/* ══ MACRO STRIP ══ */
+.macro-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:1rem}
+.mc{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 6px;text-align:center;box-shadow:var(--shadow)}
+.mc-val{font-size:1.15rem;font-weight:700;color:var(--navy)}
+.mc-u{font-size:.58rem;color:var(--muted);font-weight:400}
+.mc-lbl{font-size:.56rem;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
+/* ══ MEAL CARDS ══ */
+.meal-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:7px;overflow:hidden;box-shadow:var(--shadow)}
+.meal-hdr{display:flex;align-items:center;gap:9px;padding:12px 12px;cursor:pointer;user-select:none;min-height:56px;-webkit-appearance:none;width:100%;text-align:left;background:var(--white)}
+.meal-bar{width:3px;border-radius:2px;align-self:stretch;min-height:36px;flex-shrink:0}
+.meal-info{flex:1;min-width:0}
+.meal-time{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.meal-prev{font-size:.78rem;color:var(--text);margin-top:2px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meal-kcal{font-size:.63rem;font-weight:600;padding:3px 7px;border-radius:12px;background:var(--surface);color:var(--muted);border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+.meal-chev{font-size:.65rem;color:var(--soft);transition:transform .22s;flex-shrink:0;margin-left:4px;width:16px;text-align:center}
+.meal-body{display:none;padding:0 12px 12px;border-top:1px solid var(--border)}
+.meal-body.op{display:block}
+.meal-title{font-family:var(--ff-serif);font-size:.95rem;font-weight:700;color:var(--navy);margin:10px 0 7px;line-height:1.3}
+.ing-list li{font-size:.76rem;color:var(--muted);padding:5px 0;display:flex;gap:8px;align-items:flex-start;border-bottom:1px dashed var(--border)}
+.ing-list li:last-child{border-bottom:none}
+.ing-list li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
+.clin-note{margin-top:9px;background:var(--gold-pale);border-left:2.5px solid var(--gold);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:8px 11px;font-size:.72rem;color:#7a4f10;line-height:1.5}
+
+/* ══ SHOPPING ══ */
+.prog-wrap{margin-bottom:1rem}
+.prog-meta{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:5px}
+.prog-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:var(--teal);border-radius:4px;transition:width .3s}
+.cat-sec{margin-bottom:1.1rem}
+.cat-hdr{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--border);margin-bottom:2px}
+.cat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.cat-lbl{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.shop-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #f0ebe0;cursor:pointer;min-height:44px;border-radius:4px}
+.shop-row:last-child{border-bottom:none}
+.shop-row:active{background:#faf7f0}
+.shop-chk{width:20px;height:20px;border:1.5px solid var(--border2);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;font-size:12px;color:var(--white)}
+.shop-chk.on{background:var(--teal);border-color:var(--teal)}
+.shop-name{flex:1;font-size:.78rem;color:var(--text);line-height:1.35}
+.shop-row.done .shop-name{color:var(--soft);text-decoration:line-through}
+.shop-qty{font-size:.7rem;color:var(--muted);white-space:nowrap;text-align:right;min-width:72px;line-height:1.3}
+
+/* ══ EQUIV ══ */
+.eq-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:.9rem;box-shadow:var(--shadow)}
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider-row label{font-size:.75rem;color:var(--muted);white-space:nowrap}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--navy);border:2.5px solid var(--gold);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--navy);border:2.5px solid var(--gold)}
+.slider-val{font-size:1rem;font-weight:700;color:var(--navy);min-width:58px;text-align:right}
+.eq-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:.9rem}
+.eqc{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 12px;box-shadow:var(--shadow)}
+.eqc-val{font-size:1.3rem;font-weight:700;color:var(--navy)}
+.eqc-u{font-size:.6rem;color:var(--muted)}
+.eqc-lbl{font-size:.6rem;color:var(--soft);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.mdist{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:.9rem;box-shadow:var(--shadow)}
+.mdist-ttl{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.mdr{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid #f0ebe0}
+.mdr:last-child{border-bottom:none}
+.mdr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mdr-name{font-size:.76rem;color:var(--text);flex:1}
+.mdr-bg{flex:1;max-width:90px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.mdr-fg{height:100%;border-radius:3px}
+.mdr-val{font-size:.68rem;color:var(--muted);min-width:72px;text-align:right}
+.clin-box{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 var(--radius) var(--radius) 0;padding:12px 14px;font-size:.74rem;color:var(--muted);line-height:1.65;box-shadow:var(--shadow)}
+.clin-box strong{color:var(--navy);font-weight:700}
+
+/* ══ GUIDE ══ */
+.guide-grid{display:flex;flex-direction:column;gap:9px}
+.guide-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;box-shadow:var(--shadow)}
+.guide-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:8px}
+.guide-ttl{font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:3px}
+.guide-txt{font-size:.74rem;color:var(--muted);line-height:1.6}
+
+/* ══ FOOTER ══ */
+.ftr{background:var(--navy);color:rgba(255,255,255,.38);text-align:center;padding:1.25rem 1rem calc(env(safe-area-inset-bottom,0) + 1.25rem);font-size:.6rem;letter-spacing:.07em;border-top:1px solid rgba(184,145,58,.3)}
+.ftr span{color:var(--gold)}
+
+/* ══ RESPONSIVE — tablet/desktop ══ */
+@media(min-width:600px){
+  .hdr-inner{padding:1.4rem 1.5rem 1.2rem}
+  .phase-bar{padding:1rem 1.5rem}
+  .content{padding:1.25rem 1.5rem 4rem;max-width:860px;margin:0 auto}
+  .eq-grid{grid-template-columns:repeat(4,1fr)}
+  .guide-grid{display:grid;grid-template-columns:repeat(2,1fr)}
+  .day-grid{grid-template-columns:repeat(7,1fr)}
+}
+@media(min-width:860px){
+  .guide-grid{grid-template-columns:repeat(3,1fr)}
+  .macro-strip{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-brand">Aura Medical Solutions</div>
+    <div class="hdr-dr">Dr. Erik Cárdenas · YFACS, MASPEN</div>
+    <div class="hdr-sub">Plan Nutricional · Protocolo GLP-1 · 28 Días</div>
+    <div class="hdr-pills">
+      <span class="pill pill-g">Sin FODMAPs</span>
+      <span class="pill pill-t">5 tiempos</span>
+      <span class="pill pill-b">28 días · 2 fases</span>
+    </div>
+  </div>
+</header>
+
+<div class="phase-bar">
+  <button class="phase-btn act" onclick="setPhase('M',this)">
+    <span class="pb-title">Mantenimiento</span>
+    <span class="pb-sub">1800 kcal · Preservación masa magra</span>
+  </button>
+  <button class="phase-btn" onclick="setPhase('R',this)">
+    <span class="pb-title">Reducción</span>
+    <span class="pb-sub">1200 kcal · Déficit controlado</span>
+  </button>
+</div>
+
+<div class="main-tabs" id="mainTabs">
+  <button class="tab-btn act" onclick="switchTab('menu',this)">Menú mensual</button>
+  <button class="tab-btn" onclick="switchTab('compras',this)">Lista de compras</button>
+  <button class="tab-btn" onclick="switchTab('equiv',this)">Equivalencias</button>
+  <button class="tab-btn" onclick="switchTab('guia',this)">Guía del paciente</button>
+</div>
+
+<div class="content">
+  <div class="panel act" id="panel-menu">
+    <div class="week-nav" id="weekNav"></div>
+    <div class="day-grid" id="dayGrid"></div>
+    <div id="dayContent"></div>
+  </div>
+  <div class="panel" id="panel-compras">
+    <div class="prog-wrap">
+      <div class="prog-meta"><span id="prog-lbl">0 artículos marcados</span><span id="prog-pct">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div id="shop-content"></div>
+  </div>
+  <div class="panel" id="panel-equiv">
+    <div class="eq-card">
+      <div class="slider-row">
+        <label>Peso</label>
+        <input type="range" min="50" max="180" value="90" step="1" id="wslider" oninput="updateEquiv()">
+        <span class="slider-val"><span id="wval">90</span> kg</span>
+      </div>
+    </div>
+    <div class="eq-grid" id="eq-grid"></div>
+    <div class="mdist"><div class="mdist-ttl">Distribución de macronutrientes</div><div id="mbars"></div></div>
+    <div class="clin-box" id="clin-box"></div>
+  </div>
+  <div class="panel" id="panel-guia">
+    <div class="guide-grid" id="guide-grid"></div>
+  </div>
+</div>
+
+<footer class="ftr"><span>Aura Medical Solutions</span> · Dr. Erik Cárdenas · YFACS, MASPEN · Precisión · Innovación · Resultados</footer>
+
+<script>
+'use strict';
+const ML=['Desayuno','1ª Colación','Comida','2ª Colación','Cena'];
+const MC=['#b8913a','#1a6b5c','#185fa5','#a32d2d','#534ab7'];
+const MK_M=[400,200,450,150,400];
+const MK_R=[280,120,320,100,280];
+const DN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const WL=['Semana 1','Semana 2','Semana 3','Semana 4'];
+let phase='M',curW=0,curD=0,chk={};
+
+/* ══ 28-DAY DATA — MANTENIMIENTO ══ */
+const DM=[
+{w:0,d:0,k:1800,p:120,c:170,g:55,m:[
+ {n:'Huevo revuelto con espinaca y arroz',i:['3 claras + 1 huevo revueltos (150 g)','Espinaca salteada con aceite de oliva (80 g)','Arroz blanco — ½ taza (90 g)','Agua mineral o infusión sin azúcar'],nt:'Masticar despacio. Porción pequeña y densa en proteína.'},
+ {n:'Queso panela con mandarina',i:['Queso panela en cubos (50 g)','4 galletas de arroz sin sal','1 mandarina pequeña (100 g)'],nt:'Omitir si no hay hambre. Escuchar señales de saciedad.'},
+ {n:'Pechuga al vapor con calabaza y quinoa',i:['Pechuga de pollo al vapor (120 g)','Calabacita cocida (100 g)','Quinoa cocida — ½ taza (80 g)','Aceite de oliva extra virgen (1 cdita)'],nt:'Mayor comida del día. Comer sentado, sin prisa.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa natural (125 g)','Fresas rebanadas (70 g)'],nt:'Textura suave. Útil si hay náusea por GLP-1 en la tarde.'},
+ {n:'Salmón al horno con zanahoria y arroz',i:['Filete de salmón al horno (100 g)','Zanahoria cocida (80 g)','Arroz blanco — ¼ taza (45 g)','Aceite de oliva (1 cdita)','Jugo de limón al gusto'],nt:'Cena ligera. Terminar 2–3 horas antes de dormir.'}
+]},
+{w:0,d:1,k:1800,p:118,c:175,g:56,m:[
+ {n:'Avena con proteína y arándanos',i:['Avena sin gluten (50 g crudo)','Proteína de suero sin lactosa — 1 scoop (25 g)','Arándanos frescos (80 g)','Semillas de chía (5 g)','Leche sin lactosa (100 ml)'],nt:'Avena cremosa para fácil digestión. Sin azúcar añadida.'},
+ {n:'Atún con pepino y galletas',i:['Atún en agua escurrido (80 g)','Pepino en rodajas (100 g)','4 galletas de arroz'],nt:'Alta proteína, bajo volumen. Ideal cuando GLP-1 reduce el apetito.'},
+ {n:'Lomo de cerdo con papa y ejotes',i:['Lomo de cerdo a la plancha (120 g)','Papa cambray cocida (100 g)','Ejotes al vapor (80 g)','Aceite de oliva (1 cdita)'],nt:'Papa cocida y fría tiene índice glucémico reducido.'},
+ {n:'Pavo con kiwi',i:['Rebanadas de pavo (60 g)','1 kiwi (100 g)'],nt:'Proteína magra para sostener masa muscular.'},
+ {n:'Omelette de claras con pimientos',i:['4 claras de huevo en omelette','Pimiento rojo asado (80 g)','Espinaca (50 g)','Arroz blanco — ¼ taza (45 g)','Aceite de oliva (1 cdita)'],nt:'Cena de fácil digestión y alta tolerancia post-GLP-1.'}
+]},
+{w:0,d:2,k:1800,p:122,c:168,g:54,m:[
+ {n:'Tostadas de arroz con aguacate y huevo',i:['4 tostadas de arroz','½ aguacate Hass (60 g)','2 huevos pochados','Tomate en rodajas (80 g)','Sal de mar y chile seco al gusto'],nt:'Aguacate en grasa saludable. Textura suave — bien tolerada con GLP-1.'},
+ {n:'Cottage con naranja',i:['Queso cottage sin lactosa (100 g)','1 naranja pequeña (120 g, sin membranas blancas)'],nt:'Colación proteica densa. Solo consumir si hay apetito.'},
+ {n:'Pollo deshebrado con camote y chayote',i:['Muslo de pollo deshebrado (120 g)','Camote cocido (100 g)','Chayote en cubos al vapor (100 g)','Aceite de oliva (1 cdita)'],nt:'Camote bajo FODMAP en ración de 100 g.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (100 g)','Fresas rebanadas (80 g)'],nt:'Textura suave, ideal si hay plenitud prolongada.'},
+ {n:'Caldo de pollo con arroz y zanahoria',i:['Caldo de pollo sin cebolla ni ajo (200 ml)','Pollo desmenuzado (70 g)','Arroz cocido — ¼ taza (45 g)','Zanahoria en cubos (80 g)','Cilantro fresco al gusto'],nt:'Cena líquida-semilíquida: excelente en días de náusea.'}
+]},
+{w:0,d:3,k:1800,p:119,c:172,g:57,m:[
+ {n:'Smoothie proteico con avena',i:['Proteína de suero sin lactosa (25 g)','Leche sin lactosa (200 ml)','Plátano macho maduro — ½ pieza (80 g)','Avena sin gluten (30 g)','Linaza molida (1 cdita)'],nt:'Formato líquido para días con mayor náusea por GLP-1.'},
+ {n:'Huevo cocido con pepino',i:['1 huevo cocido','Pepino con limón y sal (100 g)','4 galletas de arroz'],nt:'Snack completo: grasa + proteína + carbohidrato complejo.'},
+ {n:'Tilapia con quinoa y espinacas',i:['Filete de tilapia al horno (130 g)','Quinoa cocida — ½ taza (80 g)','Espinacas salteadas (100 g)','Limón y hierbas frescas al gusto'],nt:'Proteína blanca magra: alta digestibilidad.'},
+ {n:'Pavo con kiwi',i:['Rebanadas de pavo (50 g)','1 kiwi (90 g)'],nt:'Kiwi favorece la motilidad gástrica.'},
+ {n:'Sopa de zanahoria con pollo y papa',i:['Pollo picado (80 g)','Zanahoria en cubos (100 g)','Papa en cubos (80 g)','Caldo de pollo sin ajo/cebolla (200 ml)','Aceite de oliva (1 cdita)'],nt:'Cena semi-líquida: alta tolerancia tras dosis semanal.'}
+]},
+{w:0,d:4,k:1800,p:121,c:169,g:55,m:[
+ {n:'Huevos a la mexicana sin cebolla',i:['3 huevos enteros','Tomate picado (80 g)','Chile serrano — ½ pieza (opcional)','2 tortillas de maíz nixtamalizado (60 g)','Aceite de oliva (1 cdita)'],nt:'Sin cebolla ni ajo. Tortilla de maíz: menor carga FODMAP.'},
+ {n:'Atún con pepino',i:['Atún en agua (80 g)','Pepino (100 g)','4 galletas de arroz'],nt:'Alta proteína, bajo volumen gástrico.'},
+ {n:'Res magra con camote y ejotes',i:['Filete de res magro (120 g)','Camote cocido (100 g)','Ejotes al vapor (100 g)','Aceite de oliva (1 cdita)','Tomillo y orégano frescos'],nt:'Fuente de hierro hem. Importante en terapia crónica con GLP-1.'},
+ {n:'Queso panela con mandarina',i:['Queso panela (50 g)','1 mandarina (100 g)'],nt:'Colación ligera. Omitir si no hay hambre.'},
+ {n:'Ensalada de atún con arroz',i:['Atún en agua (100 g)','Zanahoria rallada (80 g)','Arroz blanco — ¼ taza (45 g)','Pepino en cubos (80 g)','Aceite de oliva + limón'],nt:'Cena fría de bajo impacto gástrico. Sin mayonesa.'}
+]},
+{w:0,d:5,k:1800,p:117,c:176,g:58,m:[
+ {n:'Hotcakes de avena sin gluten',i:['Avena sin gluten molida como harina (60 g)','2 huevos enteros','Leche sin lactosa (80 ml)','½ plátano macho (70 g)','Miel de maple pura (10 g)'],nt:'Sin polvo para hornear (FODMAP). Solo bicarbonato si es necesario.'},
+ {n:'Yogur con arándanos y chía',i:['Yogur sin lactosa (125 g)','Arándanos (80 g)','Semillas de chía (5 g)'],nt:'Textura suave. Chía en dosis pequeña: bien tolerada.'},
+ {n:'Caldo tlalpeño sin frijoles',i:['Muslo de pollo desmenuzado (120 g)','Chayote en cubos (100 g)','Zanahoria (80 g)','Epazote fresco al gusto','¼ chipotle ahumado seco (sin adobo)','Caldo casero sin ajo/cebolla (250 ml)'],nt:'Sin frijoles (alto FODMAP). Chayote reemplaza la textura.'},
+ {n:'Pavo con kiwi',i:['Rebanadas de pavo (60 g)','1 kiwi (90 g)'],nt:'Snack proteico vespertino de bajo residuo.'},
+ {n:'Tacos de pollo en tortilla de maíz',i:['Pechuga de pollo a la plancha (100 g)','2 tortillas de maíz (60 g)','Lechuga orejona (50 g)','Tomate en cubos (60 g)','Aguacate (40 g)','Limón y sal al gusto'],nt:'Cena familiar adaptada. Tortilla de maíz y lechuga: bajo FODMAP.'}
+]},
+{w:0,d:6,k:1800,p:120,c:171,g:56,m:[
+ {n:'Chilaquiles de maíz con huevo',i:['3 tortillas de maíz horneadas sin freír (90 g)','Tomate molido sin cebolla (100 g)','2 huevos a la plancha','Queso panela (40 g)','Yogur natural sin lactosa (30 g)','Chile serrano (opcional)'],nt:'Versión ligera sin fritura. Sin cebolla en salsa.'},
+ {n:'Cottage con fresas',i:['Cottage sin lactosa (100 g)','Fresas (80 g)'],nt:'Proteína láctea sin lactosa: bien tolerada con GLP-1.'},
+ {n:'Salmón en papillote con verduras',i:['Filete de salmón (130 g)','Calabacita (80 g)','Zanahoria juliana (80 g)','Pimiento rojo (60 g)','Aceite de oliva (1 cdita)','Romero y tomillo frescos'],nt:'Cocción en papillote conserva humedad. Excelente digestibilidad.'},
+ {n:'Queso panela con mandarina',i:['Queso panela (50 g)','1 mandarina (100 g)'],nt:'Solo consumir si hay hambre real.'},
+ {n:'Sopa de verduras con pollo y arroz',i:['Zanahoria (100 g)','Chayote (100 g)','Calabacita (80 g)','Pollo desmenuzado (80 g)','Arroz — ¼ taza (45 g)','Caldo casero (200 ml)'],nt:'Cierre semanal. Fácil digestión. Sin picante.'}
+]},
+{w:1,d:0,k:1800,p:121,c:171,g:55,m:[
+ {n:'Enfrijoladas adaptadas (salsa de zanahoria)',i:['2 tortillas de maíz (60 g)','Pollo deshebrado (100 g)','Puré de zanahoria como salsa (80 g)','Queso panela (40 g)','Epazote fresco'],nt:'Sustitución de frijoles por zanahoria — sin FODMAP.'},
+ {n:'Arándanos con yogur',i:['Yogur sin lactosa (125 g)','Arándanos (80 g)'],nt:'Antioxidantes + proteína. Bien tolerado.'},
+ {n:'Salmón a la plancha con arroz y ejotes',i:['Filete de salmón (120 g)','Arroz blanco — ½ taza (80 g)','Ejotes al vapor (80 g)','Aceite de oliva (1 cdita)'],nt:'Omega-3 y proteína completa. Preparación rápida.'},
+ {n:'Huevo cocido con pepino',i:['1 huevo cocido','Pepino en rodajas (100 g)'],nt:'Snack completo de 90 calorías.'},
+ {n:'Pollo en salsa de tomate casera con arroz',i:['Pechuga de pollo (100 g)','Tomate asado molido sin cebolla (100 g)','Arroz — ¼ taza (45 g)','Aceite de oliva (1 cdita)'],nt:'Salsa sin cebolla ni ajo. Alta tolerancia.'}
+]},
+{w:1,d:1,k:1800,p:119,c:173,g:56,m:[
+ {n:'Omelette de huevo con espinaca y tostada',i:['3 huevos enteros en omelette','Espinaca salteada (80 g)','2 tostadas de arroz','Aceite de oliva (1 cdita)'],nt:'Desayuno rápido y completo. Alta proteína.'},
+ {n:'Queso cottage con kiwi',i:['Cottage sin lactosa (100 g)','1 kiwi (100 g)'],nt:'Proteína + vitamina C. Bien tolerado.'},
+ {n:'Res magra a la plancha con quinoa y calabacita',i:['Sirloin a la plancha (120 g)','Quinoa cocida — ½ taza (80 g)','Calabacita salteada (100 g)','Aceite de oliva (1 cdita)'],nt:'Hierro + proteína de alto valor biológico.'},
+ {n:'Fresas con queso panela',i:['Fresas (100 g)','Queso panela (40 g)'],nt:'Combinación antinauseosa para tarde con GLP-1.'},
+ {n:'Caldo de res magra con verduras',i:['Res magra desmenuzada (80 g)','Zanahoria (80 g)','Chayote (80 g)','Caldo casero (200 ml)','Cilantro y limón'],nt:'Cena ligera y reconfortante. Sin almidón.'}
+]},
+{w:1,d:2,k:1800,p:118,c:174,g:57,m:[
+ {n:'Smoothie de fresa con avena y proteína',i:['Proteína de suero sin lactosa (25 g)','Leche sin lactosa (200 ml)','Fresas (80 g)','Avena sin gluten (30 g)','Semillas de chía (5 g)'],nt:'Variación del smoothie con fresa en lugar de arándanos.'},
+ {n:'Atún con zanahoria y galletas',i:['Atún en agua (80 g)','Zanahoria rallada (80 g)','4 galletas de arroz','Limón al gusto'],nt:'Alta proteína, fibra y bajo volumen gástrico.'},
+ {n:'Tilapia en papillote con pimiento y papa',i:['Filete de tilapia (130 g)','Pimiento rojo (70 g)','Papa cambray (90 g)','Aceite de oliva (1 cdita)','Tomillo fresco'],nt:'Cocción limpia sin añadir grasa.'},
+ {n:'Pavo con arándanos',i:['Pavo rebanado (60 g)','Arándanos (60 g)'],nt:'Proteína magra + antioxidantes. 150 calorías.'},
+ {n:'Arroz con pollo (sin ajo/cebolla)',i:['Pollo deshebrado (90 g)','Arroz blanco (60 g)','Zanahoria (70 g)','Caldo casero (150 ml)','Cúrcuma al gusto'],nt:'Plato tradicional adaptado. Sin cebolla ni ajo.'}
+]},
+{w:1,d:3,k:1800,p:122,c:168,g:55,m:[
+ {n:'Huevo en tostada de arroz con aguacate',i:['2 tostadas de arroz','2 huevos estrellados','Tomate en rodajas (80 g)','Aguacate (40 g)','Chile seco y sal'],nt:'Desayuno nutritivo. Sin fritura.'},
+ {n:'Yogur con mandarina',i:['Yogur sin lactosa (125 g)','Mandarina en gajos (100 g)'],nt:'Vitamina C + probióticos. Motilidad gástrica.'},
+ {n:'Pollo asado al limón con camote y espinaca',i:['Pechuga de pollo al horno (120 g)','Camote en cubos (100 g)','Espinaca salteada (80 g)','Aceite de oliva (1 cdita)','Jugo de limón abundante'],nt:'Preparación al horno: mínima grasa añadida.'},
+ {n:'Huevo cocido con pepino',i:['1 huevo cocido','Pepino (100 g)','Limón y sal'],nt:'Snack proteico de 90 calorías.'},
+ {n:'Sopa de espinaca con pollo',i:['Espinaca (100 g)','Pollo desmenuzado (80 g)','Caldo casero (250 ml)','Zanahoria (60 g)','Limón y cilantro'],nt:'Caldo verde — rico en hierro y magnesio.'}
+]},
+{w:1,d:4,k:1800,p:120,c:172,g:56,m:[
+ {n:'Tostadas de arroz con salmón y aguacate',i:['4 tostadas de arroz','Salmón ahumado bajo sodio (80 g)','½ aguacate (60 g)','Pepino en rodajas (60 g)','Limón y sal'],nt:'Desayuno estilo nórdico. Omega-3 + grasa saludable.'},
+ {n:'Cottage con fresas',i:['Cottage sin lactosa (100 g)','Fresas (80 g)'],nt:'Proteína láctea + vitamina C.'},
+ {n:'Pollo al pastor sin cebolla con arroz',i:['Pechuga marinada en achiote + limón + orégano (120 g)','Arroz blanco — ½ taza (80 g)','Piña natural cocida (50 g)','Cilantro fresco'],nt:'Sin cebolla ni ajo. Piña en dosis baja: bien tolerada.'},
+ {n:'Queso panela con kiwi',i:['Queso panela (50 g)','1 kiwi (90 g)'],nt:'150 calorías. Vitamina C + calcio.'},
+ {n:'Tilapia al vapor con chayote',i:['Tilapia al vapor (100 g)','Chayote cocido (100 g)','Aceite de oliva (1 cdita)','Limón y hierbas'],nt:'Cena ultra ligera. Alta digestibilidad.'}
+]},
+{w:1,d:5,k:1800,p:118,c:175,g:57,m:[
+ {n:'Huevos benedictinos sin gluten',i:['2 huevos pochados','2 tostadas de arroz','¼ aguacate (40 g)','Tomate en rodajas (60 g)','Jugo de limón y eneldo'],nt:'Versión FODMAP-friendly del clásico.'},
+ {n:'Smoothie de arándanos',i:['Arándanos (100 g)','Leche sin lactosa (200 ml)','Proteína de suero (15 g)'],nt:'Colación líquida fácil de tolerar.'},
+ {n:'Lomo de cerdo con ejotes y quinoa',i:['Lomo de cerdo (120 g)','Ejotes al vapor (100 g)','Quinoa — ½ taza (80 g)','Aceite de oliva (1 cdita)','Romero fresco'],nt:'Tiamina y zinc — nutrientes que se agotan con GLP-1 crónico.'},
+ {n:'Pavo con fresas',i:['Pavo rebanado (60 g)','Fresas (70 g)'],nt:'Snack anti-inflamatorio.'},
+ {n:'Salmón al horno con espinaca salteada',i:['Salmón (100 g)','Espinaca salteada (100 g)','Aceite de oliva (1 cdita)','Ajo en polvo (mínimo)','Limón'],nt:'Sin ajo fresco. El ajo en polvo en cantidades mínimas es tolerable.'}
+]},
+{w:1,d:6,k:1800,p:121,c:170,g:56,m:[
+ {n:'Avena overnight con chía y kiwi',i:['Avena sin gluten (50 g)','Leche sin lactosa (150 ml)','Semillas de chía (5 g)','1 kiwi picado (90 g)','Miel de maple (5 g)'],nt:'Preparar la noche anterior. Digestión facilitada por la chía hidratada.'},
+ {n:'Atún con pepino y galletas',i:['Atún en agua (80 g)','Pepino (100 g)','4 galletas de arroz'],nt:'Colación clásica del plan. Confiable y bien tolerada.'},
+ {n:'Pollo en mole rojo adaptado',i:['Pechuga de pollo (120 g)','Mole casero sin ajo/cebolla (3 cdas)','Arroz blanco — ½ taza (80 g)','Ajonjolí tostado al gusto'],nt:'Domingo reconfortante. Mole casero adaptado a bajo FODMAP.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (125 g)','Arándanos (60 g)'],nt:'Cierre dulce post-comida.'},
+ {n:'Caldo de pollo con zanahoria y calabacita',i:['Pollo desmenuzado (80 g)','Zanahoria (80 g)','Calabacita (80 g)','Caldo casero (200 ml)','Cilantro y limón'],nt:'Cena de cierre semanal. Ligera y reconfortante.'}
+]},
+{w:2,d:0,k:1800,p:120,c:172,g:55,m:[
+ {n:'Huevo estrellado con arroz y espinaca',i:['2 huevos estrellados en aceite de oliva (½ cdita)','Arroz blanco — ½ taza (90 g)','Espinaca salteada (80 g)','Tomate picado (60 g)'],nt:'Desayuno rápido para inicio de semana.'},
+ {n:'Cottage con mandarina',i:['Cottage sin lactosa (100 g)','1 mandarina (100 g)'],nt:'Proteína + vitamina C. Solo si hay apetito.'},
+ {n:'Res magra con papa y zanahoria al horno',i:['Sirloin (120 g)','Papa en cubos al horno (100 g)','Zanahoria (80 g)','Aceite de oliva (1 cdita)','Tomillo y romero frescos'],nt:'Cocción al horno para menor absorción de grasa.'},
+ {n:'Queso panela con fresas',i:['Queso panela (50 g)','Fresas (80 g)'],nt:'Calcio + vitamina C. 140 calorías.'},
+ {n:'Pollo en caldo con chayote',i:['Pollo deshebrado (80 g)','Chayote (100 g)','Caldo casero (200 ml)','Epazote fresco'],nt:'Cena hidratante y de alta tolerancia.'}
+]},
+{w:2,d:1,k:1800,p:119,c:173,g:56,m:[
+ {n:'Quesadillas de maíz sin grasa',i:['2 tortillas de maíz (60 g)','Queso panela (60 g)','Espinaca (50 g)','Tomate (60 g)'],nt:'Sin manteca ni aceite. Comal seco.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (125 g)','Arándanos (80 g)'],nt:'Colación suave y antioxidante.'},
+ {n:'Salmón a la mostaza con quinoa y ejotes',i:['Salmón (120 g)','Mostaza Dijon (1 cdita — sin ajo)','Quinoa — ½ taza (80 g)','Ejotes (80 g)','Aceite de oliva (1 cdita)'],nt:'Mostaza sin ajo es bajo FODMAP.'},
+ {n:'Pavo con pepino',i:['Pavo (60 g)','Pepino (100 g)','Limón y sal'],nt:'Snack proteico de bajo residuo.'},
+ {n:'Sopa de calabacita con pollo',i:['Calabacita (120 g)','Pollo desmenuzado (80 g)','Caldo casero (200 ml)','Aceite de oliva (½ cdita)'],nt:'Crema de calabacita sin crema — suave y ligera.'}
+]},
+{w:2,d:2,k:1800,p:121,c:169,g:57,m:[
+ {n:'Avena con proteína, plátano y linaza',i:['Avena sin gluten (50 g)','Proteína de suero (25 g)','½ plátano macho (80 g)','Linaza molida (5 g)','Leche sin lactosa (100 ml)'],nt:'Variación del desayuno proteico con mayor densidad energética.'},
+ {n:'Atún con galletas de arroz',i:['Atún en agua (80 g)','4 galletas de arroz','Tomate cherry (60 g)'],nt:'Tomate cherry: bajo FODMAP en cantidades pequeñas.'},
+ {n:'Tilapia con camote y pimiento',i:['Tilapia al horno (130 g)','Camote (100 g)','Pimiento rojo asado (80 g)','Aceite de oliva (1 cdita)'],nt:'Vitamina A del camote y C del pimiento.'},
+ {n:'Kiwi con queso cottage',i:['1 kiwi (90 g)','Cottage sin lactosa (80 g)'],nt:'Enzimas del kiwi favorecen digestión proteica.'},
+ {n:'Pollo al limón con arroz y espinaca',i:['Pechuga al horno (100 g)','Arroz — ¼ taza (45 g)','Espinaca salteada (80 g)','Aceite de oliva (1 cdita)','Limón abundante'],nt:'Cena clásica y bien tolerada.'}
+]},
+{w:2,d:3,k:1800,p:118,c:174,g:56,m:[
+ {n:'Huevos pochados con espinaca y tostada',i:['2 huevos pochados','Espinaca salteada (80 g)','2 tostadas de arroz','Aceite de oliva (½ cdita)'],nt:'Formato suave para días de náusea activa.'},
+ {n:'Smoothie de fresa y proteína',i:['Proteína de suero (25 g)','Leche sin lactosa (180 ml)','Fresas (80 g)','Semillas de chía (5 g)'],nt:'Colación líquida para saciedad rápida.'},
+ {n:'Pollo con papa y ejotes en caldo',i:['Pollo en trozos (120 g)','Papa (100 g)','Ejotes (80 g)','Caldo casero (150 ml)','Hierbas frescas'],nt:'Cocción en caldo para mayor jugosidad y digestibilidad.'},
+ {n:'Yogur con mandarina',i:['Yogur sin lactosa (100 g)','Mandarina (100 g)'],nt:'120 calorías. Alta tolerancia.'},
+ {n:'Res magra salteada con calabacita',i:['Sirloin en tiras (90 g)','Calabacita (100 g)','Pimiento rojo (60 g)','Aceite de oliva (1 cdita)'],nt:'Cena sin almidón. Alta densidad proteica.'}
+]},
+{w:2,d:4,k:1800,p:122,c:167,g:55,m:[
+ {n:'Tostada de arroz con huevo y aguacate',i:['3 tostadas de arroz','2 huevos revueltos (120 g)','¼ aguacate (40 g)','Tomate (60 g)','Sal y chile seco'],nt:'Desayuno nutritivo con grasas saludables.'},
+ {n:'Atún con zanahoria',i:['Atún en agua (80 g)','Zanahoria rallada (80 g)','Limón y sal'],nt:'Sin carbohidrato. Solo proteína + verdura.'},
+ {n:'Salmón teriyaki (tamari sin gluten)',i:['Salmón (120 g)','Tamari libre de gluten (1 cda)','Miel de maple (5 g)','Jengibre fresco rallado (½ cdita)','Arroz blanco — ½ taza (80 g)','Espinaca (60 g)'],nt:'Tamari libre de gluten: bajo FODMAP. Jengibre: antiemético natural.'},
+ {n:'Fresas con cottage',i:['Fresas (80 g)','Cottage sin lactosa (80 g)'],nt:'Proteína + vitamina C. 120 calorías.'},
+ {n:'Caldo de pollo con quinoa',i:['Pollo desmenuzado (80 g)','Quinoa cocida — ¼ taza (40 g)','Zanahoria (60 g)','Caldo casero (200 ml)','Cilantro y limón'],nt:'Cena con carbohidrato mínimo. Alta proteína.'}
+]},
+{w:2,d:5,k:1800,p:117,c:175,g:58,m:[
+ {n:'Chilaquiles verdes de maíz (sin cebolla)',i:['3 tortillas de maíz horneadas (90 g)','Tomate verde asado — salsa sin cebolla (100 g)','2 huevos pochados','Queso panela (40 g)','Crema sin lactosa (30 g)'],nt:'Salsa verde sin cebolla ni ajo. Tomate verde: bajo FODMAP.'},
+ {n:'Yogur con kiwi',i:['Yogur sin lactosa (125 g)','1 kiwi (90 g)'],nt:'Probióticos + motilidad. Excelente tolerancia.'},
+ {n:'Pollo en salsa de pimiento rojo',i:['Pechuga de pollo (120 g)','Pimiento rojo asado licuado (100 g)','Arroz — ½ taza (80 g)','Aceite de oliva (1 cdita)'],nt:'Salsa sin cebolla ni ajo. Pimiento da cuerpo y dulzor.'},
+ {n:'Pavo con arándanos',i:['Pavo rebanado (60 g)','Arándanos (60 g)'],nt:'Snack proteico antioxidante.'},
+ {n:'Sopa de zanahoria con cerdo magro',i:['Lomo de cerdo (80 g)','Zanahoria (100 g)','Chayote (80 g)','Caldo casero (200 ml)'],nt:'Variación proteica del caldo base.'}
+]},
+{w:2,d:6,k:1800,p:120,c:172,g:56,m:[
+ {n:'Waffles de avena sin gluten',i:['Avena molida sin gluten (60 g)','2 huevos','Leche sin lactosa (80 ml)','½ plátano macho (70 g)','Canela al gusto'],nt:'Misma masa que los hotcakes en waflera.'},
+ {n:'Cottage con mandarina',i:['Cottage sin lactosa (100 g)','1 mandarina (100 g)'],nt:'Proteína láctea + vitamina C.'},
+ {n:'Tacos de tilapia al pastor',i:['Tilapia marinada en achiote + limón (120 g)','2 tortillas de maíz (60 g)','Piña natural cocida (40 g)','Cilantro','Tomate'],nt:'Sin cebolla. Piña cocida: bien tolerada.'},
+ {n:'Queso panela con fresas',i:['Queso panela (50 g)','Fresas (80 g)'],nt:'Clásico del plan. Alta tolerancia.'},
+ {n:'Sopa de zanahoria cremosa (sin crema)',i:['Zanahoria (150 g)','Pollo desmenuzado (80 g)','Caldo casero (200 ml)','Cúrcuma y comino','Limón'],nt:'Zanahoria da el color y consistencia. Sin leguminosas.'}
+]},
+{w:3,d:0,k:1800,p:121,c:170,g:55,m:[
+ {n:'Huevo revuelto con espinaca y tortilla',i:['2 huevos + 2 claras revueltos','Espinaca (80 g)','2 tortillas de maíz (60 g)','Aceite de oliva (1 cdita)'],nt:'Variación con tortilla en lugar de arroz. Buena tolerancia.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (125 g)','Arándanos (80 g)'],nt:'Colación suave de semana 4.'},
+ {n:'Res magra con quinoa y espinaca',i:['Sirloin (120 g)','Quinoa — ½ taza (80 g)','Espinaca salteada (100 g)','Aceite de oliva (1 cdita)'],nt:'Hierro + folato. Combinación antiinflamatoria.'},
+ {n:'Atún con pepino',i:['Atún en agua (70 g)','Pepino (100 g)','Limón'],nt:'Colación proteica de bajo costo calórico.'},
+ {n:'Pollo al horno con camote y zanahoria',i:['Pechuga al horno (100 g)','Camote (80 g)','Zanahoria (80 g)','Aceite de oliva (1 cdita)','Paprika y tomillo'],nt:'Cena colorida y densa en vitamina A.'}
+]},
+{w:3,d:1,k:1800,p:118,c:174,g:57,m:[
+ {n:'Avena cremosa con cottage y fresas',i:['Avena sin gluten (50 g)','Cottage sin lactosa (60 g)','Fresas picadas (80 g)','Semillas de chía (5 g)','Miel de maple (5 g)'],nt:'Doble proteína en el desayuno. Saciedad prolongada.'},
+ {n:'Pavo con galletas de arroz',i:['Pavo rebanado (60 g)','4 galletas de arroz'],nt:'Snack sencillo. 180 calorías.'},
+ {n:'Tilapia al curry sin cebolla',i:['Tilapia (130 g)','Curry en polvo (1 cdita)','Leche de coco (60 ml)','Calabacita (100 g)','Arroz blanco — ½ taza (80 g)'],nt:'Leche de coco en cantidad pequeña: bajo FODMAP. Curry antiinflamatorio.'},
+ {n:'Kiwi con queso panela',i:['1 kiwi (90 g)','Queso panela (40 g)'],nt:'Vitamina C + calcio. Bien tolerado.'},
+ {n:'Salmón con espinaca en caldo',i:['Salmón (100 g)','Espinaca (100 g)','Caldo casero (150 ml)','Aceite de oliva (½ cdita)'],nt:'Cena rica en omega-3, hierro y ácido fólico.'}
+]},
+{w:3,d:2,k:1800,p:120,c:171,g:56,m:[
+ {n:'Huevo pochado con puré de camote',i:['2 huevos pochados','Camote cocido y aplastado (100 g)','Espinaca salteada (60 g)','Aceite de oliva (1 cdita)'],nt:'Textura suave. Ideal para días post-dosis de GLP-1.'},
+ {n:'Smoothie de arándanos con proteína',i:['Proteína de suero (25 g)','Leche sin lactosa (180 ml)','Arándanos (80 g)'],nt:'Colación líquida alta en proteína y antioxidantes.'},
+ {n:'Pollo deshebrado en salsa de tomate y zanahoria',i:['Pollo deshebrado (120 g)','Tomate molido (80 g)','Zanahoria rallada (60 g)','Arroz — ½ taza (80 g)','Aceite de oliva (1 cdita)'],nt:'Zanahoria rallada agrega nutrientes y textura sin FODMAP.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (100 g)','Fresas (80 g)'],nt:'120 calorías. Alta tolerancia.'},
+ {n:'Lomo de cerdo con ejotes y zanahoria',i:['Lomo de cerdo (100 g)','Ejotes (100 g)','Zanahoria (80 g)','Aceite de oliva (1 cdita)','Limón y tomillo'],nt:'Cena sin almidón. Alta proteína y fibra.'}
+]},
+{w:3,d:3,k:1800,p:119,c:172,g:57,m:[
+ {n:'Hotcakes de avena con proteína integrada',i:['Avena sin gluten molida (60 g)','1 huevo + 1 clara','Proteína de suero (15 g)','Leche sin lactosa (80 ml)','Miel de maple (10 g)'],nt:'Hotcakes con proteína incorporada — mayor densidad nutricional.'},
+ {n:'Cottage con kiwi',i:['Cottage sin lactosa (100 g)','1 kiwi (90 g)'],nt:'Proteína + motilidad gástrica.'},
+ {n:'Salmón con quinoa y pimiento',i:['Salmón (120 g)','Quinoa — ½ taza (80 g)','Pimiento rojo (80 g)','Aceite de oliva (1 cdita)','Limón'],nt:'Omega-3 + proteína completa.'},
+ {n:'Pavo con mandarina',i:['Pavo rebanado (60 g)','1 mandarina (100 g)'],nt:'Snack clásico del plan.'},
+ {n:'Sopa de espinaca con huevo pochado',i:['Espinaca (120 g)','1 huevo pochado','Caldo casero (200 ml)','Aceite de oliva (½ cdita)','Limón y sal'],nt:'Cena ultra ligera. Hierro + proteína + magnesio.'}
+]},
+{w:3,d:4,k:1800,p:121,c:169,g:55,m:[
+ {n:'Tostadas de arroz con res y aguacate',i:['Res magra desmenuzada (100 g)','3 tostadas de arroz','¼ aguacate (40 g)','Tomate en cubos (70 g)','Cilantro y limón'],nt:'Desayuno tipo sopes pero bajo FODMAP.'},
+ {n:'Atún con zanahoria',i:['Atún en agua (80 g)','Zanahoria rallada (80 g)','Limón y sal'],nt:'Colación proteica de viernes.'},
+ {n:'Pollo en pipián adaptado con chía',i:['Pechuga de pollo (120 g)','Semillas de chía molidas (10 g)','Tomate verde asado (80 g)','Cilantro + epazote','Arroz — ½ taza (80 g)'],nt:'Pipián adaptado sin pepita. Chía molida da consistencia.'},
+ {n:'Fresas con yogur',i:['Fresas (80 g)','Yogur sin lactosa (100 g)'],nt:'Cierre dulce de semana. Alta tolerancia.'},
+ {n:'Tilapia al vapor con chayote y zanahoria',i:['Tilapia (100 g)','Chayote (100 g)','Zanahoria (80 g)','Aceite de oliva (1 cdita)'],nt:'Cena ligera de fin de semana laboral.'}
+]},
+{w:3,d:5,k:1800,p:117,c:177,g:58,m:[
+ {n:'Desayuno familiar: huevos con tortilla y fruta',i:['3 huevos a la plancha (aceite mínimo)','2 tortillas de maíz (60 g)','Fresas (80 g)','Queso panela (40 g)'],nt:'Desayuno de sábado familiar. Sin cebolla ni ajo.'},
+ {n:'Smoothie de fresas y proteína',i:['Proteína de suero (25 g)','Leche sin lactosa (200 ml)','Fresas (100 g)'],nt:'Colación líquida de fin de semana.'},
+ {n:'Pozole blanco adaptado (con arroz)',i:['Pechuga de pollo desmenuzada (120 g)','Arroz blanco (60 g)','Caldo casero (300 ml)','Lechuga orejona (40 g)','Orégano, limón, pepino rallado'],nt:'Pozole adaptado sin maíz cacahuazintle. Arroz da la textura.'},
+ {n:'Pavo con arándanos',i:['Pavo rebanado (60 g)','Arándanos (60 g)'],nt:'Snack de tarde de sábado.'},
+ {n:'Salmón a la plancha con arroz y ejotes',i:['Salmón (100 g)','Arroz — ¼ taza (45 g)','Ejotes (80 g)','Aceite de oliva (1 cdita)'],nt:'Cena de sábado ligera.'}
+]},
+{w:3,d:6,k:1800,p:120,c:172,g:56,m:[
+ {n:'Avena con fresas, chía y miel',i:['Avena sin gluten (50 g)','Fresas picadas (80 g)','Semillas de chía (5 g)','Miel de maple (10 g)','Leche sin lactosa (120 ml)'],nt:'Cierre del mes. Desayuno completo y reconfortante.'},
+ {n:'Cottage con kiwi y arándanos',i:['Cottage sin lactosa (100 g)','½ kiwi (45 g)','Arándanos (40 g)'],nt:'Proteína + doble antioxidante.'},
+ {n:'Pollo asado de domingo con arroz y verduras',i:['Muslo de pollo al horno (130 g)','Arroz blanco — ½ taza (80 g)','Zanahoria (80 g)','Calabacita (80 g)','Aceite de oliva (1 cdita)','Tomillo y limón'],nt:'Comida dominical de cierre. ¡Celebrar el mes completado!'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (125 g)','Fresas (70 g)'],nt:'Colación dulce de cierre mensual.'},
+ {n:'Caldo de pollo con arroz y verduras',i:['Pollo desmenuzado (80 g)','Arroz — ¼ taza (45 g)','Zanahoria (80 g)','Chayote (80 g)','Caldo casero (200 ml)','Cilantro y limón'],nt:'Última cena del mes. ¡Felicidades por completar el plan!'}
+]}
+];
+
+/* ══ 28-DAY DATA — REDUCCIÓN ══ */
+const DR=[
+{w:0,d:0,k:1200,p:95,c:110,g:35,m:[
+ {n:'Clara de huevo con espinaca y tostada',i:['4 claras de huevo a la plancha (140 g)','Espinaca salteada (60 g)','2 galletas de arroz sin sal'],nt:'Máxima proteína, mínimo volumen. Reducir a la mitad si hay náusea.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (100 g)','Fresas (60 g)'],nt:'Omitir si no hay apetito.'},
+ {n:'Pollo al vapor con calabaza y quinoa (reducida)',i:['Pechuga de pollo al vapor (100 g)','Calabacita (100 g)','Quinoa — ¼ taza (40 g)','Aceite de oliva (½ cdita)'],nt:'Reducir carbohidrato vs mantenimiento. Priorizar proteína.'},
+ {n:'Pepino con queso panela',i:['Pepino en rodajas (100 g)','Queso panela (30 g)'],nt:'Colación baja en calorías. Alta saciedad por volumen.'},
+ {n:'Sopa de pollo con zanahoria',i:['Pollo desmenuzado (70 g)','Zanahoria (80 g)','Caldo casero (200 ml)','Cilantro y limón'],nt:'Cena líquida. Alta tolerancia con GLP-1.'}
+]},
+{w:0,d:1,k:1200,p:97,c:108,g:34,m:[
+ {n:'Avena con proteína (reducida)',i:['Avena sin gluten (35 g crudo)','Proteína de suero (25 g)','Arándanos (60 g)','Leche sin lactosa (80 ml)'],nt:'Porción reducida. Suficiente para 2–3 horas de saciedad.'},
+ {n:'Atún con pepino',i:['Atún en agua (70 g)','Pepino (100 g)','Limón y sal'],nt:'Sin galletas en fase de reducción.'},
+ {n:'Tilapia con ejotes y papa pequeña',i:['Tilapia al horno (110 g)','Ejotes al vapor (80 g)','Papa cambray (70 g)','Aceite de oliva (½ cdita)'],nt:'Papa reducida a 70 g. Mantener proteína intacta.'},
+ {n:'Kiwi con pavo',i:['Pavo rebanado (40 g)','1 kiwi pequeño (70 g)'],nt:'100 calorías. Motilidad + proteína magra.'},
+ {n:'Omelette de claras con pimiento',i:['4 claras de huevo','Pimiento rojo asado (70 g)','Espinaca (50 g)','Aceite de oliva (½ cdita)'],nt:'Cena sin carbohidrato. Alta proteína, bajo impacto calórico.'}
+]},
+{w:0,d:2,k:1200,p:96,c:112,g:33,m:[
+ {n:'Huevo pochado con espinaca y galletas',i:['2 huevos pochados','Espinaca salteada (60 g)','2 galletas de arroz'],nt:'Formato suave para días de náusea activa.'},
+ {n:'Cottage con fresas',i:['Cottage sin lactosa (80 g)','Fresas (60 g)'],nt:'80 g vs 100 g de mantenimiento. Reducción calórica leve.'},
+ {n:'Pollo deshebrado con chayote',i:['Muslo de pollo deshebrado (100 g)','Chayote en cubos (100 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón al mediodía en fase de reducción.'},
+ {n:'Pepino con limón',i:['Pepino (120 g)','Limón, sal y chile seco'],nt:'Colación de volumen. 15 calorías aprox.'},
+ {n:'Caldo tlalpeño reducido',i:['Pollo desmenuzado (70 g)','Chayote (80 g)','Zanahoria (60 g)','Caldo casero (200 ml)','Epazote y chipotle seco'],nt:'Cena caliente, reconfortante, baja en calorías.'}
+]},
+{w:0,d:3,k:1200,p:98,c:107,g:35,m:[
+ {n:'Smoothie proteico reducido',i:['Proteína de suero (25 g)','Leche sin lactosa (150 ml)','Fresas (60 g)','Linaza molida (5 g)'],nt:'Sin avena ni plátano. Menor carga de carbohidratos.'},
+ {n:'Huevo cocido con pepino',i:['1 huevo cocido','Pepino (100 g)','Sal y limón'],nt:'90 calorías. Solo si hay hambre.'},
+ {n:'Salmón con espinaca y quinoa pequeña',i:['Salmón (100 g)','Espinacas salteadas (100 g)','Quinoa — ¼ taza (40 g)','Aceite de oliva (½ cdita)'],nt:'Omega-3 apoya la respuesta al GLP-1 a nivel inflamatorio.'},
+ {n:'Yogur con kiwi',i:['Yogur sin lactosa (100 g)','½ kiwi (45 g)'],nt:'80 calorías aprox. Alta tolerancia.'},
+ {n:'Sopa de pollo con verduras',i:['Pollo (70 g)','Zanahoria (80 g)','Chayote (80 g)','Caldo casero (200 ml)'],nt:'Cena líquida sin almidón. Máximo volumen, mínimas calorías.'}
+]},
+{w:0,d:4,k:1200,p:94,c:111,g:34,m:[
+ {n:'Clara con tomate y tortilla',i:['3 claras + 1 huevo entero','Tomate picado (80 g)','2 tortillas de maíz pequeñas (40 g)','Aceite de oliva (½ cdita)'],nt:'Versión reducida de huevos a la mexicana. Sin cebolla ni ajo.'},
+ {n:'Atún con zanahoria',i:['Atún en agua (70 g)','Zanahoria rallada (80 g)','Limón al gusto'],nt:'Sin carbohidrato procesado. Proteína + verdura cruda.'},
+ {n:'Res magra con ejotes',i:['Filete de res magro (100 g)','Ejotes al vapor (100 g)','Aceite de oliva (½ cdita)','Tomillo fresco'],nt:'Sin almidón al mediodía de viernes.'},
+ {n:'Mandarina',i:['1 mandarina (100 g)'],nt:'45 calorías. Omitir si no hay hambre.'},
+ {n:'Ensalada de atún sin arroz',i:['Atún en agua (90 g)','Pepino (80 g)','Zanahoria rallada (60 g)','Lechuga orejona (50 g)','Aceite de oliva + limón'],nt:'Cena sin carbohidrato. Alta proteína, alto volumen.'}
+]},
+{w:0,d:5,k:1200,p:96,c:109,g:36,m:[
+ {n:'Huevo con aguacate y tostada',i:['2 huevos a la plancha','¼ aguacate (40 g)','2 galletas de arroz','Tomate (60 g)'],nt:'Grasa saludable + proteína. Formato sencillo.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (100 g)','Arándanos (60 g)'],nt:'Antioxidantes + proteína láctea.'},
+ {n:'Caldo de pollo con chayote y zanahoria',i:['Pollo desmenuzado (100 g)','Chayote (80 g)','Zanahoria (80 g)','Caldo casero (250 ml)','Epazote fresco'],nt:'Comida en formato caldo. Alta saciedad hídrica.'},
+ {n:'Pavo con pepino',i:['Pavo rebanado (40 g)','Pepino (100 g)','Limón y sal'],nt:'80 calorías. Snack de rescate.'},
+ {n:'Pollo a la plancha con calabacita',i:['Pechuga de pollo (90 g)','Calabacita (100 g)','Aceite de oliva (½ cdita)','Limón y hierbas'],nt:'Cena simple sin almidón.'}
+]},
+{w:0,d:6,k:1200,p:95,c:110,g:35,m:[
+ {n:'Clara de huevo con tomate y tortilla',i:['3 claras + 1 huevo','Tomate molido (80 g, sin cebolla)','2 tortillas de maíz (40 g)','Queso panela (20 g)'],nt:'Versión reducida de chilaquiles. Sin freír.'},
+ {n:'Cottage con fresas',i:['Cottage sin lactosa (80 g)','Fresas (60 g)'],nt:'Proteína láctea + antioxidantes.'},
+ {n:'Salmón en papillote con verduras',i:['Salmón (100 g)','Calabacita (80 g)','Zanahoria (70 g)','Aceite de oliva (½ cdita)','Limón y tomillo'],nt:'Cocción limpia, sin añadir calorías.'},
+ {n:'Kiwi',i:['1 kiwi (90 g)'],nt:'55 calorías. Motilidad y vitamina C.'},
+ {n:'Sopa de verduras con pollo',i:['Pollo desmenuzado (70 g)','Zanahoria (80 g)','Calabacita (80 g)','Caldo casero (200 ml)'],nt:'Cierre semanal ligero. Sin almidón.'}
+]},
+{w:1,d:0,k:1200,p:96,c:111,g:34,m:[
+ {n:'Huevo revuelto con espinaca (sin tortilla)',i:['3 claras + 1 huevo (140 g)','Espinaca (70 g)','Tomate (60 g)','Aceite de oliva (½ cdita)'],nt:'Sin carbohidrato en desayuno lunes semana 2.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (100 g)','Fresas (60 g)'],nt:'Solo si hay hambre.'},
+ {n:'Salmón a la plancha con ejotes',i:['Salmón (110 g)','Ejotes (100 g)','Aceite de oliva (½ cdita)','Limón'],nt:'Sin almidón al mediodía. Alta proteína.'},
+ {n:'Atún con pepino',i:['Atún en agua (60 g)','Pepino (100 g)'],nt:'80 calorías. Colación magra.'},
+ {n:'Pollo en caldo con calabacita',i:['Pollo desmenuzado (70 g)','Calabacita (100 g)','Caldo casero (200 ml)'],nt:'Cena líquida simple.'}
+]},
+{w:1,d:1,k:1200,p:97,c:109,g:35,m:[
+ {n:'Avena reducida con chía',i:['Avena sin gluten (35 g)','Semillas de chía (5 g)','Leche sin lactosa (100 ml)','Fresas (60 g)'],nt:'Sin proteína en polvo hoy. Base de avena y chía.'},
+ {n:'Huevo cocido con zanahoria',i:['1 huevo cocido','Zanahoria en palitos (80 g)'],nt:'70 calorías aprox.'},
+ {n:'Tilapia con calabacita y zanahoria',i:['Tilapia al vapor (110 g)','Calabacita (100 g)','Zanahoria (70 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón. Proteína blanca + fibra.'},
+ {n:'Cottage con kiwi',i:['Cottage sin lactosa (80 g)','½ kiwi (45 g)'],nt:'Enzimas del kiwi + proteína. 100 calorías.'},
+ {n:'Res magra en caldo ligero',i:['Res desmenuzada magra (70 g)','Chayote (80 g)','Zanahoria (60 g)','Caldo casero (180 ml)'],nt:'Cena con res magra para variar la fuente proteica.'}
+]},
+{w:1,d:2,k:1200,p:95,c:112,g:33,m:[
+ {n:'Smoothie de fresa sin avena',i:['Proteína de suero (25 g)','Leche sin lactosa (150 ml)','Fresas (80 g)'],nt:'Desayuno líquido para miércoles. Sin avena.'},
+ {n:'Pepino con queso panela',i:['Pepino (120 g)','Queso panela (30 g)'],nt:'Colación fresca. 80 calorías.'},
+ {n:'Pollo deshebrado con pimiento y quinoa mínima',i:['Pollo deshebrado (100 g)','Pimiento rojo (80 g)','Quinoa — 2 cdas (25 g)','Aceite de oliva (½ cdita)'],nt:'Quinoa reducida a mínimo. Prioridad en proteína.'},
+ {n:'Pavo con fresas',i:['Pavo rebanado (40 g)','Fresas (60 g)'],nt:'Snack anti-inflamatorio de 80 calorías.'},
+ {n:'Sopa de espinaca con huevo',i:['Espinaca (100 g)','1 huevo pochado','Caldo casero (200 ml)'],nt:'Cena ultra ligera. Hierro + proteína.'}
+]},
+{w:1,d:3,k:1200,p:98,c:108,g:35,m:[
+ {n:'Huevo pochado con camote mínimo',i:['2 huevos pochados','Camote cocido (60 g)','Espinaca (60 g)'],nt:'Camote reducido a 60 g. Base de proteína intacta.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (100 g)','Arándanos (60 g)'],nt:'100 calorías. Probióticos.'},
+ {n:'Salmón con chayote y zanahoria',i:['Salmón (110 g)','Chayote (100 g)','Zanahoria (80 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón. Omega-3 + fibra.'},
+ {n:'Atún con pepino',i:['Atún (60 g)','Pepino (100 g)'],nt:'75 calorías.'},
+ {n:'Pollo en caldo con espinaca',i:['Pollo (70 g)','Espinaca (100 g)','Caldo casero (200 ml)'],nt:'Caldo verde de alto valor nutricional.'}
+]},
+{w:1,d:4,k:1200,p:94,c:110,g:34,m:[
+ {n:'Tostada de arroz con salmón ahumado',i:['2 tostadas de arroz','Salmón ahumado bajo sodio (70 g)','¼ aguacate (30 g)','Pepino (60 g)'],nt:'Omega-3 en el desayuno. Alta densidad nutricional.'},
+ {n:'Fresas con cottage',i:['Fresas (60 g)','Cottage sin lactosa (70 g)'],nt:'90 calorías. Proteína + vitamina C.'},
+ {n:'Res magra con ejotes',i:['Sirloin (100 g)','Ejotes (100 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón. Hierro + proteína.'},
+ {n:'Kiwi',i:['1 kiwi pequeño (80 g)'],nt:'48 calorías. Motilidad gástrica.'},
+ {n:'Tilapia al vapor con calabacita',i:['Tilapia (90 g)','Calabacita (100 g)','Aceite de oliva (½ cdita)'],nt:'Cena mínima de viernes. 200 calorías.'}
+]},
+{w:1,d:5,k:1200,p:96,c:109,g:36,m:[
+ {n:'Huevo a la plancha con espinaca',i:['2 huevos','Espinaca (80 g)','Tomate (60 g)','Aceite de oliva (½ cdita)'],nt:'Sin carbohidrato en sábado de reducción.'},
+ {n:'Smoothie de arándanos',i:['Proteína de suero (20 g)','Leche sin lactosa (150 ml)','Arándanos (70 g)'],nt:'160 calorías. Colación líquida.'},
+ {n:'Pollo con chayote y ejotes',i:['Pechuga de pollo (110 g)','Chayote (100 g)','Ejotes (80 g)','Aceite de oliva (½ cdita)'],nt:'Comida de sábado sin almidón. Alta saciedad.'},
+ {n:'Pavo con pepino',i:['Pavo (40 g)','Pepino (100 g)'],nt:'80 calorías.'},
+ {n:'Salmón a la plancha con espinaca',i:['Salmón (100 g)','Espinaca (100 g)','Aceite de oliva (½ cdita)'],nt:'Cena proteica de sábado.'}
+]},
+{w:1,d:6,k:1200,p:95,c:111,g:35,m:[
+ {n:'Avena con fresas y chía (reducida)',i:['Avena sin gluten (35 g)','Fresas (70 g)','Chía (5 g)','Leche sin lactosa (100 ml)'],nt:'Desayuno dominical liviano.'},
+ {n:'Atún con zanahoria',i:['Atún en agua (70 g)','Zanahoria rallada (70 g)'],nt:'80 calorías. Sin carbohidrato.'},
+ {n:'Tilapia con papa pequeña y ejotes',i:['Tilapia (110 g)','Papa cambray (70 g)','Ejotes (80 g)','Aceite de oliva (½ cdita)'],nt:'Papa mínima para tolerar el cierre semanal.'},
+ {n:'Yogur con kiwi',i:['Yogur sin lactosa (100 g)','½ kiwi (45 g)'],nt:'80 calorías.'},
+ {n:'Sopa de pollo con verduras',i:['Pollo (70 g)','Calabacita (80 g)','Chayote (70 g)','Caldo casero (200 ml)'],nt:'Cierre de semana 2. Cena ligera.'}
+]},
+{w:2,d:0,k:1200,p:97,c:109,g:35,m:[
+ {n:'Clara revuelta con tomate y espinaca',i:['4 claras + 1 huevo (150 g)','Tomate (70 g)','Espinaca (60 g)','Aceite de oliva (½ cdita)'],nt:'Sin tortilla ni galletas. Carbohidrato en la comida.'},
+ {n:'Cottage con mandarina',i:['Cottage sin lactosa (80 g)','½ mandarina (50 g)'],nt:'Solo si hay hambre. 90 calorías.'},
+ {n:'Pollo con quinoa mínima y zanahoria',i:['Pollo deshebrado (110 g)','Quinoa — 2 cdas (25 g)','Zanahoria (80 g)','Aceite de oliva (½ cdita)'],nt:'Quinoa mínima. Foco en proteína y verdura.'},
+ {n:'Pepino con limón',i:['Pepino (120 g)','Limón y sal'],nt:'15 calorías. Colación de volumen.'},
+ {n:'Tilapia en caldo con chayote',i:['Tilapia (90 g)','Chayote (100 g)','Caldo casero (180 ml)'],nt:'Cena de inicio de semana 3.'}
+]},
+{w:2,d:1,k:1200,p:96,c:110,g:34,m:[
+ {n:'Huevo con aguacate mínimo',i:['2 huevos a la plancha','¼ aguacate (30 g)','Tomate (60 g)'],nt:'Sin carbohidrato complejo. Proteína + grasa saludable.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (100 g)','Fresas (60 g)'],nt:'100 calorías.'},
+ {n:'Res magra con calabacita y zanahoria',i:['Res magra (100 g)','Calabacita (100 g)','Zanahoria (70 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón. Alta saciedad proteica.'},
+ {n:'Pavo con arándanos',i:['Pavo (40 g)','Arándanos (50 g)'],nt:'75 calorías. Antioxidante.'},
+ {n:'Sopa de zanahoria con pollo',i:['Pollo (70 g)','Zanahoria (100 g)','Caldo casero (200 ml)'],nt:'Caldo naranja. Vitamina A + proteína.'}
+]},
+{w:2,d:2,k:1200,p:95,c:112,g:33,m:[
+ {n:'Smoothie de kiwi con proteína',i:['Proteína de suero (25 g)','Leche sin lactosa (150 ml)','1 kiwi (90 g)'],nt:'Vitamina C + proteína. Variación.'},
+ {n:'Atún con pepino',i:['Atún (70 g)','Pepino (100 g)'],nt:'75 calorías.'},
+ {n:'Salmón con espinaca (sin almidón)',i:['Salmón (110 g)','Espinaca (120 g)','Aceite de oliva (½ cdita)','Limón'],nt:'Comida sin carbohidrato. Proteína + verdura de hoja.'},
+ {n:'Fresas con queso panela',i:['Fresas (70 g)','Queso panela (30 g)'],nt:'90 calorías.'},
+ {n:'Pollo en caldo con ejotes',i:['Pollo (70 g)','Ejotes (80 g)','Caldo casero (200 ml)'],nt:'Caldo proteico con fibra.'}
+]},
+{w:2,d:3,k:1200,p:98,c:108,g:35,m:[
+ {n:'Omelette de claras con pimiento y tomate',i:['4 claras de huevo','Pimiento rojo (70 g)','Tomate (60 g)','Aceite de oliva (½ cdita)'],nt:'Sin carbohidrato. Alto volumen visual.'},
+ {n:'Yogur con kiwi',i:['Yogur sin lactosa (100 g)','½ kiwi (45 g)'],nt:'80 calorías.'},
+ {n:'Tilapia con papa mínima y chayote',i:['Tilapia (110 g)','Papa cambray (60 g)','Chayote (90 g)','Aceite de oliva (½ cdita)'],nt:'Papa a 60 g para mantener déficit.'},
+ {n:'Cottage con arándanos',i:['Cottage sin lactosa (70 g)','Arándanos (50 g)'],nt:'85 calorías. Proteína + antioxidante.'},
+ {n:'Res magra en caldo con espinaca',i:['Res desmenuzada (70 g)','Espinaca (100 g)','Caldo casero (180 ml)'],nt:'Hierro + folato. Cena antiinflamatoria.'}
+]},
+{w:2,d:4,k:1200,p:95,c:110,g:34,m:[
+ {n:'Huevo pochado con espinaca',i:['2 huevos pochados','Espinaca (80 g)','Aceite de oliva (½ cdita)'],nt:'Desayuno mínimo de viernes semana 3.'},
+ {n:'Atún con zanahoria rallada',i:['Atún (70 g)','Zanahoria (80 g)'],nt:'80 calorías.'},
+ {n:'Pollo con ejotes y camote pequeño',i:['Pollo a la plancha (110 g)','Ejotes (100 g)','Camote (60 g)','Aceite de oliva (½ cdita)'],nt:'Camote reducido. Proteína prioridad.'},
+ {n:'Pavo con pepino',i:['Pavo (40 g)','Pepino (100 g)'],nt:'75 calorías.'},
+ {n:'Tilapia al vapor con calabacita',i:['Tilapia (90 g)','Calabacita (100 g)'],nt:'Cena ligera. 170 calorías.'}
+]},
+{w:2,d:5,k:1200,p:97,c:109,g:36,m:[
+ {n:'Huevo con aguacate y fresas',i:['2 huevos a la plancha','¼ aguacate (30 g)','Fresas (70 g)'],nt:'Sábado de reducción. Sin carbohidrato de almidón.'},
+ {n:'Smoothie de fresas',i:['Proteína de suero (20 g)','Leche sin lactosa (150 ml)','Fresas (70 g)'],nt:'150 calorías.'},
+ {n:'Pollo a la plancha con chayote y ejotes',i:['Pechuga (110 g)','Chayote (100 g)','Ejotes (80 g)','Aceite de oliva (½ cdita)'],nt:'Comida de sábado. Sin almidón.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (100 g)','Arándanos (50 g)'],nt:'100 calorías.'},
+ {n:'Salmón con espinaca',i:['Salmón (100 g)','Espinaca (100 g)','Aceite de oliva (½ cdita)'],nt:'Cena omega-3 de fin de semana.'}
+]},
+{w:2,d:6,k:1200,p:95,c:111,g:35,m:[
+ {n:'Avena con arándanos (reducida)',i:['Avena sin gluten (35 g)','Arándanos (70 g)','Leche sin lactosa (100 ml)'],nt:'Desayuno dominical sencillo.'},
+ {n:'Cottage con kiwi',i:['Cottage sin lactosa (80 g)','½ kiwi (45 g)'],nt:'100 calorías.'},
+ {n:'Tilapia con quinoa y zanahoria',i:['Tilapia (110 g)','Quinoa — 2 cdas (25 g)','Zanahoria (80 g)','Aceite de oliva (½ cdita)'],nt:'Comida dominical. Quinoa mínima.'},
+ {n:'Fresas con yogur',i:['Fresas (60 g)','Yogur sin lactosa (80 g)'],nt:'90 calorías.'},
+ {n:'Caldo de pollo con espinaca',i:['Pollo (70 g)','Espinaca (100 g)','Caldo casero (200 ml)'],nt:'Cierre de semana 3.'}
+]},
+{w:3,d:0,k:1200,p:96,c:110,g:35,m:[
+ {n:'Clara de huevo con espinaca',i:['4 claras + 1 huevo (150 g)','Espinaca (70 g)','Tomate (60 g)','Aceite de oliva (½ cdita)'],nt:'Inicio de semana 4. Sin almidón en el desayuno.'},
+ {n:'Yogur con fresas',i:['Yogur sin lactosa (100 g)','Fresas (60 g)'],nt:'Solo si hay hambre.'},
+ {n:'Salmón con ejotes',i:['Salmón (110 g)','Ejotes (100 g)','Aceite de oliva (½ cdita)','Limón'],nt:'Sin almidón. Omega-3 + fibra.'},
+ {n:'Atún con pepino',i:['Atún (60 g)','Pepino (100 g)'],nt:'75 calorías.'},
+ {n:'Pollo en caldo con zanahoria',i:['Pollo (70 g)','Zanahoria (80 g)','Caldo casero (200 ml)'],nt:'Cena de inicio de semana 4.'}
+]},
+{w:3,d:1,k:1200,p:97,c:109,g:34,m:[
+ {n:'Avena con proteína y fresas',i:['Avena sin gluten (35 g)','Proteína de suero (20 g)','Fresas (60 g)','Leche sin lactosa (100 ml)'],nt:'Doble proteína en desayuno de martes semana 4.'},
+ {n:'Huevo cocido con zanahoria',i:['1 huevo cocido','Zanahoria (80 g)'],nt:'70 calorías.'},
+ {n:'Res magra con calabacita',i:['Sirloin (100 g)','Calabacita (100 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón. Hierro + proteína.'},
+ {n:'Pavo con kiwi',i:['Pavo (40 g)','½ kiwi (45 g)'],nt:'80 calorías.'},
+ {n:'Tilapia en caldo con chayote',i:['Tilapia (90 g)','Chayote (100 g)','Caldo casero (180 ml)'],nt:'Cena semi-líquida de fácil digestión.'}
+]},
+{w:3,d:2,k:1200,p:95,c:111,g:33,m:[
+ {n:'Smoothie de arándanos',i:['Proteína de suero (25 g)','Leche sin lactosa (150 ml)','Arándanos (80 g)'],nt:'Miércoles semana 4. Sin sólidos.'},
+ {n:'Pepino con queso panela',i:['Pepino (120 g)','Queso panela (30 g)'],nt:'80 calorías.'},
+ {n:'Pollo con espinaca y papa mínima',i:['Pollo deshebrado (110 g)','Espinaca (100 g)','Papa cambray (60 g)','Aceite de oliva (½ cdita)'],nt:'Papa a mínimo. Proteína y verdura de hoja.'},
+ {n:'Cottage con fresas',i:['Cottage sin lactosa (70 g)','Fresas (60 g)'],nt:'85 calorías.'},
+ {n:'Salmón con calabacita',i:['Salmón (100 g)','Calabacita (100 g)','Aceite de oliva (½ cdita)'],nt:'Cena de miércoles semana 4.'}
+]},
+{w:3,d:3,k:1200,p:98,c:108,g:35,m:[
+ {n:'Huevo pochado con tomate y espinaca',i:['2 huevos pochados','Tomate (70 g)','Espinaca (60 g)'],nt:'Desayuno sin carbohidrato. Jueves final.'},
+ {n:'Yogur con mandarina',i:['Yogur sin lactosa (100 g)','½ mandarina (50 g)'],nt:'90 calorías.'},
+ {n:'Tilapia con chayote y zanahoria',i:['Tilapia (110 g)','Chayote (100 g)','Zanahoria (70 g)','Aceite de oliva (½ cdita)'],nt:'Sin almidón. Proteína + fibra.'},
+ {n:'Atún con pepino',i:['Atún (60 g)','Pepino (100 g)'],nt:'75 calorías.'},
+ {n:'Res magra en caldo con calabacita',i:['Res desmenuzada (70 g)','Calabacita (80 g)','Caldo casero (200 ml)'],nt:'Cena proteica de cierre de semana.'}
+]},
+{w:3,d:4,k:1200,p:95,c:110,g:34,m:[
+ {n:'Omelette de claras con espinaca',i:['4 claras de huevo','Espinaca (80 g)','Tomate (60 g)','Aceite de oliva (½ cdita)'],nt:'Viernes de reducción. Sin carbohidrato en desayuno.'},
+ {n:'Fresas con cottage',i:['Fresas (60 g)','Cottage sin lactosa (70 g)'],nt:'85 calorías.'},
+ {n:'Pollo con ejotes',i:['Pechuga (110 g)','Ejotes (100 g)','Aceite de oliva (½ cdita)'],nt:'Comida de viernes sin almidón.'},
+ {n:'Pavo con arándanos',i:['Pavo (40 g)','Arándanos (50 g)'],nt:'75 calorías.'},
+ {n:'Salmón al vapor con espinaca',i:['Salmón (100 g)','Espinaca (100 g)','Aceite de oliva (½ cdita)'],nt:'Cena de penúltimo día. Omega-3 de cierre.'}
+]},
+{w:3,d:5,k:1200,p:97,c:109,g:36,m:[
+ {n:'Huevo con aguacate y fresas',i:['2 huevos a la plancha','¼ aguacate (30 g)','Fresas (80 g)'],nt:'Penúltimo sábado. Sin almidón.'},
+ {n:'Smoothie de kiwi',i:['Proteína de suero (20 g)','Leche sin lactosa (150 ml)','1 kiwi (90 g)'],nt:'150 calorías.'},
+ {n:'Salmón con chayote y espinaca',i:['Salmón (110 g)','Chayote (100 g)','Espinaca (80 g)','Aceite de oliva (½ cdita)'],nt:'Comida de sábado. Sin almidón.'},
+ {n:'Yogur con arándanos',i:['Yogur sin lactosa (100 g)','Arándanos (50 g)'],nt:'100 calorías.'},
+ {n:'Pollo a la plancha con calabacita',i:['Pechuga (90 g)','Calabacita (100 g)','Aceite de oliva (½ cdita)'],nt:'Cena penúltima. 200 calorías.'}
+]},
+{w:3,d:6,k:1200,p:95,c:111,g:35,m:[
+ {n:'Avena final con fresas y chía',i:['Avena sin gluten (35 g)','Fresas (70 g)','Chía (5 g)','Leche sin lactosa (100 ml)'],nt:'Cierre del mes de reducción. ¡Completar el plan es un logro enorme!'},
+ {n:'Cottage con kiwi y arándanos',i:['Cottage sin lactosa (70 g)','½ kiwi (45 g)','Arándanos (30 g)'],nt:'Proteína + doble antioxidante. 90 calorías.'},
+ {n:'Pollo asado con zanahoria y calabacita',i:['Pechuga al horno (110 g)','Zanahoria (80 g)','Calabacita (80 g)','Aceite de oliva (½ cdita)'],nt:'Comida de cierre mensual. Celebrar el esfuerzo.'},
+ {n:'Fresas con yogur',i:['Fresas (70 g)','Yogur sin lactosa (80 g)'],nt:'Colación dulce de cierre. 90 calorías.'},
+ {n:'Caldo de pollo con espinaca y zanahoria',i:['Pollo desmenuzado (70 g)','Espinaca (80 g)','Zanahoria (70 g)','Caldo casero (200 ml)'],nt:'Última cena del plan. ¡Felicidades por completar el mes!'}
+]}
+];
+
+/* ══ SHOPPING ══ */
+const SM=[
+ {l:'Proteínas animales',c:'#185fa5',items:[{n:'Pechuga de pollo',q:'2.8 kg'},{n:'Muslo de pollo sin hueso',q:'1.9 kg'},{n:'Salmón fresco',q:'1.8 kg'},{n:'Filete de tilapia',q:'1.3 kg'},{n:'Filete de res magro',q:'1 kg'},{n:'Lomo de cerdo magro',q:'700 g'},{n:'Atún en agua (latas)',q:'12 latas'},{n:'Jamón de pavo bajo sodio',q:'1.3 kg'},{n:'Salmón ahumado bajo sodio',q:'200 g'}]},
+ {l:'Lácteos y huevo',c:'#854f0b',items:[{n:'Huevo entero',q:'8 docenas'},{n:'Claras pasteurizadas',q:'2 L'},{n:'Yogur sin lactosa',q:'28 piezas'},{n:'Queso panela',q:'1.5 kg'},{n:'Queso cottage sin lactosa',q:'1.5 kg'},{n:'Leche sin lactosa',q:'4 L'}]},
+ {l:'Cereales y carbohidratos',c:'#0f6e56',items:[{n:'Arroz blanco',q:'4 kg'},{n:'Avena sin gluten',q:'2 kg'},{n:'Quinoa',q:'2 kg'},{n:'Tortillas de maíz',q:'4 kg'},{n:'Galletas de arroz sin sal',q:'8 paquetes'},{n:'Papa blanca o cambray',q:'2 kg'},{n:'Camote amarillo',q:'1.5 kg'}]},
+ {l:'Verduras (bajo FODMAP)',c:'#3b6d11',items:[{n:'Espinaca fresca',q:'2 kg'},{n:'Zanahoria',q:'4 kg'},{n:'Calabacita',q:'3 kg'},{n:'Chayote',q:'16 piezas'},{n:'Pepino',q:'2.5 kg'},{n:'Pimiento rojo',q:'16 piezas'},{n:'Ejotes frescos',q:'1.6 kg'},{n:'Lechuga orejona',q:'4 cabezas'},{n:'Tomate bola',q:'4 kg'}]},
+ {l:'Frutas (bajo FODMAP)',c:'#993c1d',items:[{n:'Fresas',q:'2.8 kg'},{n:'Arándanos',q:'1.6 kg'},{n:'Kiwi',q:'28 piezas'},{n:'Mandarina',q:'28 piezas'},{n:'Naranja',q:'12 piezas'},{n:'Plátano macho maduro',q:'8 piezas'},{n:'Piña natural',q:'1 pieza'}]},
+ {l:'Grasas y extras',c:'#534ab7',items:[{n:'Aceite de oliva extra virgen',q:'2 L'},{n:'Aguacate Hass',q:'16 piezas'},{n:'Semillas de chía',q:'400 g'},{n:'Linaza molida',q:'400 g'},{n:'Proteína de suero sin lactosa',q:'2.8 kg'},{n:'Miel de maple pura',q:'500 ml'},{n:'Leche de coco (lata pequeña)',q:'2 latas'}]},
+ {l:'Condimentos y caldo',c:'#888780',items:[{n:'Caldo de pollo (sin ajo/cebolla)',q:'8 L'},{n:'Limones',q:'4 kg'},{n:'Cilantro fresco',q:'8 manojos'},{n:'Epazote fresco',q:'4 manojos'},{n:'Tomillo y romero',q:'4 manojos c/u'},{n:'Tamari libre de gluten',q:'1 frasco'},{n:'Achiote en pasta',q:'100 g'},{n:'Chile chipotle seco',q:'1 paquete pequeño'},{n:'Curry en polvo',q:'1 frasco pequeño'},{n:'Sal, pimienta, chile seco, orégano',q:'al gusto'}]}
+];
+const SR=[
+ {l:'Proteínas animales',c:'#185fa5',items:[{n:'Pechuga de pollo',q:'2 kg'},{n:'Muslo de pollo sin hueso',q:'1 kg'},{n:'Salmón fresco',q:'1.5 kg'},{n:'Filete de tilapia',q:'1.2 kg'},{n:'Filete de res magro',q:'900 g'},{n:'Atún en agua (latas)',q:'12 latas'},{n:'Jamón de pavo bajo sodio',q:'1.1 kg'},{n:'Salmón ahumado bajo sodio',q:'140 g'}]},
+ {l:'Lácteos y huevo',c:'#854f0b',items:[{n:'Huevo entero',q:'6 docenas'},{n:'Claras pasteurizadas',q:'2 L'},{n:'Yogur sin lactosa',q:'22 piezas'},{n:'Queso panela',q:'700 g'},{n:'Queso cottage sin lactosa',q:'1.2 kg'},{n:'Leche sin lactosa',q:'3 L'}]},
+ {l:'Carbohidratos (reducidos)',c:'#0f6e56',items:[{n:'Arroz blanco',q:'1.5 kg'},{n:'Avena sin gluten',q:'1 kg'},{n:'Quinoa',q:'700 g'},{n:'Tortillas de maíz',q:'1.5 kg'},{n:'Galletas de arroz sin sal',q:'4 paquetes'},{n:'Papa cambray',q:'700 g'},{n:'Camote amarillo',q:'500 g'}]},
+ {l:'Verduras (libre)',c:'#3b6d11',items:[{n:'Espinaca fresca',q:'2.5 kg'},{n:'Zanahoria',q:'4.5 kg'},{n:'Calabacita',q:'3.5 kg'},{n:'Chayote',q:'16 piezas'},{n:'Pepino',q:'3.5 kg'},{n:'Pimiento rojo',q:'12 piezas'},{n:'Ejotes frescos',q:'1.8 kg'},{n:'Lechuga orejona',q:'4 cabezas'},{n:'Tomate bola',q:'4 kg'}]},
+ {l:'Frutas (bajo FODMAP)',c:'#993c1d',items:[{n:'Fresas',q:'2 kg'},{n:'Arándanos',q:'1.2 kg'},{n:'Kiwi',q:'28 piezas'},{n:'Mandarina',q:'12 piezas'}]},
+ {l:'Grasas y extras',c:'#534ab7',items:[{n:'Aceite de oliva extra virgen',q:'1 L'},{n:'Aguacate Hass',q:'8 piezas'},{n:'Linaza molida',q:'200 g'},{n:'Semillas de chía',q:'150 g'},{n:'Proteína de suero sin lactosa',q:'2 kg'}]},
+ {l:'Condimentos y caldo',c:'#888780',items:[{n:'Caldo de pollo (sin ajo/cebolla)',q:'8 L'},{n:'Limones',q:'4 kg'},{n:'Cilantro fresco',q:'6 manojos'},{n:'Epazote fresco',q:'3 manojos'},{n:'Achiote en pasta',q:'50 g'},{n:'Sal, pimienta, chile seco, orégano',q:'al gusto'}]}
+];
+
+/* ══ GUIDES ══ */
+const GD=[
+ {i:'💧',c:'#e6f1fb',t:'Hidratación',tx:'1.5 a 2 litros de agua al día. No beber durante las comidas — esperar al menos 30 minutos para no diluir enzimas digestivas ni aumentar el volumen gástrico.'},
+ {i:'🕐',c:'#fdf3e3',t:'Tiempos de comida',tx:'Comer en intervalos de 3 a 4 horas. No saltarse el desayuno. Si el GLP-1 suprime el apetito, reducir la porción pero no omitir el tiempo de comida.'},
+ {i:'🚫',c:'#fdf0f0',t:'Alimentos prohibidos (FODMAP)',tx:'Evitar estrictamente: ajo, cebolla, puerro, cebollín, trigo, centeno, cebada, frijoles, lentejas, garbanzos, leche entera, quesos maduros, mango, manzana, pera, sandía, coliflor, brócoli.'},
+ {i:'🥩',c:'#e0f2ec',t:'Proteína prioritaria',tx:'Asegurar al menos 100 g de proteína diaria. Con GLP-1 existe riesgo de pérdida de masa muscular. Consumir proteína en cada tiempo de comida — especialmente en el desayuno.'},
+ {i:'🤢',c:'#f7f0e0',t:'Si hay náusea',tx:'Preferir formatos blandos, tibios y semilíquidos. Reducir la porción a la mitad. Evitar alimentos muy grasosos, muy fríos o con olores intensos. El jengibre fresco en pequeñas cantidades tiene efecto antiemético.'},
+ {i:'🌡️',c:'#fdf0f0',t:'Temperatura',tx:'Las comidas tibias son mejor toleradas que muy calientes o muy frías. Comer despacio, sentado, en ambiente tranquilo y sin distracciones.'},
+ {i:'🏃',c:'#eaf5e3',t:'Actividad física',tx:'Ejercicio de fuerza 2-3 veces por semana para preservar masa muscular. Caminar al menos 30 min/día. Evitar ejercicio intenso en las primeras 2 horas post-comida.'},
+ {i:'💊',c:'#e6f1fb',t:'Suplementación sugerida',tx:'Multivitamínico diario (Vitamina D, Zinc, Hierro). Vitamina B12 si hay náusea persistente. Omega-3 1g/día si no se consume pescado regularmente. Consultar con el médico tratante.'},
+ {i:'📋',c:'#fdf3e3',t:'Seguimiento',tx:'Registrar síntomas digestivos: náusea, distensión, estreñimiento, reflujo. Pesar a la misma hora, en ayunas. Reportar pérdida mayor a 1.5 kg/semana al médico.'},
+];
+
+/* ══ LOGIC ══ */
+function getD(){return phase==='M'?DM:DR;}
+function getS(){return phase==='M'?SM:SR;}
+function getK(mi){return phase==='M'?MK_M[mi]:MK_R[mi];}
+
+function setPhase(p,btn){
+  phase=p; chk={};
+  document.querySelectorAll('.phase-btn').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  buildWNav(); renderDay(curW,curD);
+  renderShop(); updateEquiv();
+}
+
+function switchTab(n,btn){
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('act'));
+  btn.classList.add('act');
+  document.getElementById('panel-'+n).classList.add('act');
+  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+function buildWNav(){
+  document.getElementById('weekNav').innerHTML=WL.map((l,i)=>
+    `<button class="week-btn${i===curW?' act':''}" onclick="selW(${i})">${l}</button>`
+  ).join('');
+}
+
+function selW(w){curW=w;curD=0;buildWNav();renderDay(w,0);}
+
+function renderDay(w,d){
+  curW=w;curD=d;
+  const data=getD().filter(x=>x.w===w);
+  document.getElementById('dayGrid').innerHTML=data.map((day,i)=>
+    `<button class="day-cell${i===d?' act':''}" onclick="selD(${i})">
+      <div class="dc-num">Día ${w*7+i+1}</div>
+      <div class="dc-name">${DN[day.d]}</div>
+    </button>`
+  ).join('');
+  const day=data[d];
+  if(!day)return;
+  let html=`<div class="macro-strip">
+    <div class="mc"><div class="mc-val">${day.k}</div><div class="mc-u"> kcal</div><div class="mc-lbl">total</div></div>
+    <div class="mc"><div class="mc-val">${day.p}<span class="mc-u"> g</span></div><div class="mc-lbl">proteína</div></div>
+    <div class="mc"><div class="mc-val">${day.c}<span class="mc-u"> g</span></div><div class="mc-lbl">carbohid.</div></div>
+    <div class="mc"><div class="mc-val">${day.g}<span class="mc-u"> g</span></div><div class="mc-lbl">grasa</div></div>
+  </div>`;
+  day.m.forEach((m,mi)=>{
+    const id=`mx-${w}-${d}-${mi}`;
+    html+=`<div class="meal-card">
+      <button class="meal-hdr" onclick="tog('${id}')" aria-expanded="false" id="btn-${id}">
+        <div class="meal-bar" style="background:${MC[mi]};min-height:36px"></div>
+        <div class="meal-info">
+          <div class="meal-time">${ML[mi]}</div>
+          <div class="meal-prev">${m.n}</div>
+        </div>
+        <span class="meal-kcal">${getK(mi)} kcal</span>
+        <span class="meal-chev" id="chev-${id}">▼</span>
+      </button>
+      <div class="meal-body" id="${id}">
+        <div class="meal-title">${m.n}</div>
+        <ul class="ing-list">${m.i.map(x=>`<li>${x}</li>`).join('')}</ul>
+        <div class="clin-note">${m.nt}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('dayContent').innerHTML=html;
+}
+
+function selD(d){renderDay(curW,d);}
+
+function tog(id){
+  const b=document.getElementById(id);
+  const c=document.getElementById('chev-'+id);
+  const btn=document.getElementById('btn-'+id);
+  const op=b.classList.toggle('op');
+  c.style.transform=op?'rotate(180deg)':'';
+  btn.setAttribute('aria-expanded',op);
+}
+
+function renderShop(){
+  const data=getS();
+  let html='';
+  data.forEach((cat,ci)=>{
+    html+=`<div class="cat-sec"><div class="cat-hdr"><div class="cat-dot" style="background:${cat.c}"></div><span class="cat-lbl">${cat.l}</span></div>`;
+    cat.items.forEach((item,ii)=>{
+      const k=`${ci}-${ii}`;
+      if(chk[k]===undefined)chk[k]=false;
+      html+=`<div class="shop-row${chk[k]?' done':''}" id="sr-${k}" onclick="togS('${k}')">
+        <div class="shop-chk${chk[k]?' on':''}" id="sc-${k}">${chk[k]?'✓':''}</div>
+        <span class="shop-name">${item.n}</span>
+        <span class="shop-qty">${item.q}</span>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('shop-content').innerHTML=html;
+  updP();
+}
+
+function togS(k){
+  chk[k]=!chk[k];
+  const row=document.getElementById('sr-'+k);
+  const box=document.getElementById('sc-'+k);
+  if(chk[k]){row.classList.add('done');box.classList.add('on');box.textContent='✓';}
+  else{row.classList.remove('done');box.classList.remove('on');box.textContent='';}
+  updP();
+}
+
+function updP(){
+  const data=getS();
+  const tot=data.reduce((a,c)=>a+c.items.length,0);
+  const done=Object.values(chk).filter(Boolean).length;
+  const pct=tot?Math.round(done/tot*100):0;
+  document.getElementById('prog-lbl').textContent=`${done} de ${tot} artículos marcados`;
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+function updateEquiv(){
+  const w=parseInt(document.getElementById('wslider').value);
+  document.getElementById('wval').textContent=w;
+  const kcal=phase==='M'?1800:1200;
+  const pf=phase==='M'?1.3:1.2;
+  const pG=Math.round(w*pf),cG=Math.round((kcal*.38)/4),gG=Math.round((kcal*.27)/9);
+  const kkg=Math.round(kcal/w);
+  const pP=Math.round(pG*4/kcal*100),cP=Math.round(cG*4/kcal*100),gP=Math.round(gG*9/kcal*100);
+  document.getElementById('eq-grid').innerHTML=`
+    <div class="eqc"><div class="eqc-val">${kkg}<span class="eqc-u"> kcal/kg</span></div><div class="eqc-lbl">densidad calórica</div></div>
+    <div class="eqc"><div class="eqc-val">${pG}<span class="eqc-u"> g</span></div><div class="eqc-lbl">proteína (${pf} g/kg)</div></div>
+    <div class="eqc"><div class="eqc-val">${cG}<span class="eqc-u"> g</span></div><div class="eqc-lbl">carbohidratos</div></div>
+    <div class="eqc"><div class="eqc-val">${gG}<span class="eqc-u"> g</span></div><div class="eqc-lbl">grasa</div></div>`;
+  const mac=[{n:'Proteína',p:pP,g:pG,c:'#185fa5'},{n:'Carbohidratos',p:cP,g:cG,c:'#1a6b5c'},{n:'Grasa',p:gP,g:gG,c:'#854f0b'}];
+  document.getElementById('mbars').innerHTML=mac.map(m=>`
+    <div class="mdr"><div class="mdr-dot" style="background:${m.c}"></div>
+    <span class="mdr-name">${m.n}</span>
+    <div class="mdr-bg"><div class="mdr-fg" style="width:${m.p}%;background:${m.c}"></div></div>
+    <span class="mdr-val">${m.g}g · ${m.p}%</span></div>`).join('');
+  let nota='';
+  if(w<70)nota=`<strong>Paciente &lt;70 kg:</strong> ${kcal} kcal = ${kkg} kcal/kg/día. ${phase==='R'?'Déficit muy agresivo — considerar ajustar a 1000–1100 kcal previa consulta.':'Verificar aporte suficiente para evitar hipoglucemia reactiva.'}`;
+  else if(w<=100)nota=`<strong>Rango estándar (${w} kg):</strong> ${kkg} kcal/kg/día. ${phase==='M'?'Distribución óptima para preservación de masa magra con GLP-1.':'Fase de inducción controlada. Proteína a 1.2 g/kg protege el músculo.'} Monitorear tolerancia digestiva.`;
+  else if(w<=140)nota=`<strong>Obesidad severa (${w} kg):</strong> ${kkg} kcal/kg/día. Asegurar ≥${pG} g de proteína/día. ${phase==='R'?'Evaluar suplementación adicional (vitaminas B y D).':'Considerar incrementar a 2000 kcal si hay fatiga excesiva.'}`;
+  else nota=`<strong>Paciente &gt;140 kg:</strong> ${kkg} kcal/kg/día — déficit agresivo. ${phase==='R'?'Escalar a 1400–1500 kcal para evitar fatiga severa.':'Evaluar ajuste a 2200 kcal si hay pérdida de masa magra.'} Proteína mínima: ${pG} g/día.`;
+  document.getElementById('clin-box').innerHTML=nota;
+}
+
+function renderGuides(){
+  document.getElementById('guide-grid').innerHTML=GD.map(g=>
+    `<div class="guide-card">
+      <div class="guide-icon" style="background:${g.c}">${g.i}</div>
+      <div class="guide-ttl">${g.t}</div>
+      <div class="guide-txt">${g.tx}</div>
+    </div>`).join('');
+}
+
+buildWNav();renderDay(0,0);renderShop();updateEquiv();renderGuides();
+</script>
+</body>
+</html>
